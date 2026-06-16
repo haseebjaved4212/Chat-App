@@ -4,7 +4,7 @@ import { AuthContext } from '../../context/AuthContext';
 import { WebSocketContext } from '../../context/WebSocketContext';
 import { Send, Image as ImageIcon, Video, Paperclip } from 'lucide-react';
 import { Button } from '../ui/button';
-import { Input } from '../components/ui/input'; // fixed import path below
+import { Input } from '../ui/input';
 
 const ChatWindow = ({ conversation }) => {
     const { authTokens, user } = useContext(AuthContext);
