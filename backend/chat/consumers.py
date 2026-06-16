@@ -14,6 +14,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         if self.user.is_anonymous:
             await self.close()
         else:
+            await self.accept()
             # We add user to a personal group for direct notifications (like online status updates)
             self.user_group_name = f"user_{self.user.id}"
             await self.channel_layer.group_add(
@@ -24,8 +25,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
             # Broadcast user online status
             await self.set_online_status(True)
             await self.broadcast_status_to_contacts(True)
-
-            await self.accept()
 
     async def disconnect(self, close_code):
         if not self.user.is_anonymous:
