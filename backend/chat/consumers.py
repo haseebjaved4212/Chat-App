@@ -1,4 +1,5 @@
 import json
+from django.core.serializers.json import DjangoJSONEncoder
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from django.contrib.auth import get_user_model
@@ -117,7 +118,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
             )
             # Handle media assigning if uploaded previously via API (simulated here)
             # Often, media is uploaded via REST, and then WS is notified, or sent text with media ID.
-            return MessageSerializer(msg).data
+            data = MessageSerializer(msg).data
+            return json.loads(json.dumps(data, cls=DjangoJSONEncoder))
         except Conversation.DoesNotExist:
             return None
 
