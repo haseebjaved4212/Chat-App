@@ -4,9 +4,11 @@ import { AuthContext } from '../../context/AuthContext';
 import { WebSocketContext } from '../../context/WebSocketContext';
 import { Users, LogOut, Plus } from 'lucide-react';
 import { Button } from '../ui/button';
+import NewChatModal from './NewChatModal';
 
 const Sidebar = ({ activeConversation, setActiveConversation }) => {
     const [conversations, setConversations] = useState([]);
+    const [isNewChatModalOpen, setIsNewChatModalOpen] = useState(false);
     const { authTokens, logoutUser, user } = useContext(AuthContext);
     const { onlineUsers } = useContext(WebSocketContext);
 
@@ -37,7 +39,7 @@ const Sidebar = ({ activeConversation, setActiveConversation }) => {
                     <h2 className="text-xl font-bold tracking-tight">Chats</h2>
                 </div>
                 <div className="flex space-x-2">
-                    <Button variant="ghost" size="icon" title="New Chat">
+                    <Button variant="ghost" size="icon" title="New Chat" onClick={() => setIsNewChatModalOpen(true)}>
                         <Plus className="h-5 w-5" />
                     </Button>
                     <Button variant="ghost" size="icon" onClick={logoutUser} title="Logout">
@@ -101,6 +103,18 @@ const Sidebar = ({ activeConversation, setActiveConversation }) => {
                     );
                 })}
             </div>
+            <NewChatModal 
+                isOpen={isNewChatModalOpen} 
+                onClose={() => setIsNewChatModalOpen(false)} 
+                onChatCreated={(conv) => {
+                    setConversations(prev => {
+                        const exists = prev.find(c => c.id === conv.id);
+                        if (exists) return prev;
+                        return [conv, ...prev];
+                    });
+                    setActiveConversation(conv);
+                }}
+            />
         </div>
     );
 };
